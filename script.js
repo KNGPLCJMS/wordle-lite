@@ -1,6 +1,7 @@
 import { wordList } from "./wordList.js";
 import { wordHash } from "./wordList.js";
 
+let started = false
 const lbNL = document.querySelectorAll(".LBDB");
 let wtl = 0;
 let curCol = 0;
@@ -8,27 +9,55 @@ let indxPNT = 0;
 let ansst;
 let ansar;
 let guesses = 0;
+let boxColArr = new Array(30).fill(3);
 
 function start(){
     console.log("start() run")
     ansst = wordList[Math.floor(Math.random() * wordList.length)];
+
+
+
     ansar =[...ansst];
+    boxColArr = Array(30).fill(3);
     curCol=0;
     indxPNT=0;
+    started =true;
     guesses = 0;
     document.getElementById("startBut").disabled=true;
+    document.getElementById("over").style.display="none";
     console.log("start() end")
 }
 let inputAr = [];
 document.getElementById("startBut").addEventListener("click", start);
 document.addEventListener("keydown", function(event) {
-    if (/^[a-zA-Z]$/.test(event.key)) {
+   if(started){ if (/^[a-zA-Z]$/.test(event.key)) {
         keyIn(event.key);
     }
     if(event.key=="Enter"){
         //checkGuess();
         if (checkGuess()){
-            console.log("valid")
+            const colray = answerCheck();
+            console.log("valid");
+            console.log(colray);
+            for (let i = 0; i<=4; i++){
+                boxColArr[curCol*5+i]=colray[i];
+            }
+            console.log(boxColArr);
+            curCol++;
+            indxPNT=0;
+            if (colray==[0,0,0,0,0]){
+                document.getElementById("startBut").disabled=false;
+                document.getElementById("over").style.display="flex";
+                started = false;
+            }
+            if (curCol>5){
+                document.getElementById("startBut").disabled=false;
+                document.getElementById("over").style.display="flex";
+                started = false;
+                
+            }
+            
+
         } else{
             console.log("invalid")
         }
@@ -37,7 +66,7 @@ document.addEventListener("keydown", function(event) {
         letRem();
     }
 
-});
+}});
 
 function letRem(){
     let tempAd = 0;
@@ -94,10 +123,84 @@ function checkGuess(){
 
   return wordHash.has(fg.toLowerCase());
 }
+function answerCheck(){
+    let colray = [2, 2, 2, 2, 2]; 
+    let gueray = [];
+    let ansarCopy = [...ansar]; 
+    const incr = curCol * 5;
+
+    for (let i = 0; i < 5; i++){
+        const gai = lbNL[incr + i].textContent.toLowerCase();
+        gueray[i] = gai;
+        if (gai == ansar[i]){
+            colray[i] = 0;
+            ansarCopy[i] = null; 
+        }
+    }
+    
+
+    for (let i = 0; i < 5; i++){
+        if (colray[i] !== 0){ 
+            const gai = gueray[i];
+            const indexInCopy = ansarCopy.indexOf(gai);
+            if (indexInCopy !== -1){
+                colray[i] = 1; 
+                ansarCopy[indexInCopy] = null;
+            } else {
+                colray[i] = 2;
+            }
+        }
+    }
+    
+    return colray;
+}
+
 
 function validWord(string){
     return wordHash.has(string);
 }
+function draw(){
+
+    let indx = (curCol*5)+indxPNT;
+    let addsafe=0;
+    if(indxPNT>4){
+        addsafe=-1;
+    }
+    for(let i = 0; i<lbNL.length; i++){
+        if(i!=indx&&lbNL[i]!=null){lbNL[i].style.border="3px solid rgb(85,83,83)"}
+        
+
+        let bgColor;
+        if(boxColArr[i]==0){
+            bgColor = "rgb(100, 224, 83)"; 
+        }
+        else if (boxColArr[i]==1){
+            bgColor = "rgb(197, 209, 66)"; 
+        } else if (boxColArr[i]==2){
+            bgColor = "rgb(124, 127, 127)"; 
+        } else if (boxColArr[i]==3){
+            bgColor = "rgb(180, 186, 186)";
+        }
+        
+        if(boxColArr[i] !== 3 && lbNL[i].style.backgroundColor !== bgColor){
+            lbNL[i].classList.add("flipping");
+            setTimeout(() => {
+                lbNL[i].style.backgroundColor = bgColor;
+            }, 300); 
+        } else {
+            lbNL[i].style.backgroundColor = bgColor;
+        }
+    }
+    
+    if (curCol*5+indxPNT+addsafe!=indx){
+        indx--;
+    }
+
+    lbNL[indx].style.border = "3px solid rgb(0,0,0)"
+}
+
+
+setInterval(draw, 100);
 /*
 Documentation
 

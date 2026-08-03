@@ -26,7 +26,12 @@ document.addEventListener("keydown", function(event) {
         keyIn(event.key);
     }
     if(event.key=="Enter"){
-
+        //checkGuess();
+        if (checkGuess()){
+            console.log("valid")
+        } else{
+            console.log("invalid")
+        }
     }
     if(event.key=="Backspace"){
         letRem();
@@ -73,9 +78,23 @@ function keyIn(keyLet){
     lbNL[indx].textContent = keyLet.toUpperCase();
     indxPNT++;
 }
-function guess(){
-    
+function checkGuess(){
+  const incr = curCol * 5;
+
+  let fg = "";
+  for (let i = 0; i < 5; i++){
+    const el = lbNL[incr + i];
+    if (!el) return false;
+
+    const ch = (el.textContent ?? "").trim();
+    if (ch === "") return false;
+
+    fg += ch;
+  }
+
+  return wordHash.has(fg.toLowerCase());
 }
+
 function validWord(string){
     return wordHash.has(string);
 }

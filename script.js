@@ -1,4 +1,5 @@
 import { wordList } from "./wordList.js";
+import { ansList } from "./wordList.js";
 import { wordHash } from "./wordList.js";
 const oT = document.getElementById("overText")
 let started = false
@@ -13,7 +14,9 @@ let boxColArr = new Array(30).fill(3);
 
 function start(){
     console.log("start() run")
-    ansst = wordList[Math.floor(Math.random() * wordList.length)];
+    ansst = ansList[Math.floor(Math.random() * ansList.length)];
+
+    //ansst="apple" //used for testing
 
     for(let i = 0; i < lbNL.length; i++){
         lbNL[i].textContent = "";
@@ -23,7 +26,7 @@ function start(){
     ansar =[...ansst];
     boxColArr = Array(30).fill(3);
     curCol=0;
-    indxPNT=0;
+    indxPNT=0; 
     started =true;
     guesses = 0;
     document.getElementById("startBut").disabled=true;
@@ -48,12 +51,12 @@ document.addEventListener("keydown", function(event) {
             console.log(boxColArr);
             curCol++;
             indxPNT=0;
-            if (colray==[0,0,0,0,0]){
+            setTimeout(()=>{if (colray.every(color => color === 0)){
                 document.getElementById("startBut").disabled=false;
                 document.getElementById("over").style.display="flex";
                 started = false;
                 oT.textContent="You Won!"
-                
+                return; 
             }
             if (curCol>5&&started){
                 document.getElementById("startBut").disabled=false;
@@ -61,7 +64,7 @@ document.addEventListener("keydown", function(event) {
                 started = false;
                 oT.textContent="The word was "+ansst
                 
-            }
+            }},1000);
             
 
         } else{

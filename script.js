@@ -1,6 +1,6 @@
 import { wordList } from "./wordList.js";
 import { wordHash } from "./wordList.js";
-
+const oT = document.getElementById("overText")
 let started = false
 const lbNL = document.querySelectorAll(".LBDB");
 let wtl = 0;
@@ -15,7 +15,10 @@ function start(){
     console.log("start() run")
     ansst = wordList[Math.floor(Math.random() * wordList.length)];
 
-
+    for(let i = 0; i < lbNL.length; i++){
+        lbNL[i].textContent = "";
+        lbNL[i].style.backgroundColor = "rgb(180, 186, 186)";
+    }
 
     ansar =[...ansst];
     boxColArr = Array(30).fill(3);
@@ -49,11 +52,14 @@ document.addEventListener("keydown", function(event) {
                 document.getElementById("startBut").disabled=false;
                 document.getElementById("over").style.display="flex";
                 started = false;
+                oT.textContent="You Won!"
+                
             }
-            if (curCol>5){
+            if (curCol>5&&started){
                 document.getElementById("startBut").disabled=false;
                 document.getElementById("over").style.display="flex";
                 started = false;
+                oT.textContent="The word was "+ansst
                 
             }
             
@@ -151,7 +157,16 @@ function answerCheck(){
             }
         }
     }
-    
+    const guessStartIndex = curCol * 5;
+    for(let i = 0; i < 5; i++){
+        const boxIndex = guessStartIndex + i;
+        setTimeout(() => {
+            lbNL[boxIndex].classList.add("flipping");
+            setTimeout(() => {
+                lbNL[boxIndex].classList.remove("flipping");
+            }, 600); 
+        }, i * 100); 
+    }
     return colray;
 }
 
@@ -182,14 +197,9 @@ function draw(){
             bgColor = "rgb(180, 186, 186)";
         }
         
-        if(boxColArr[i] !== 3 && lbNL[i].style.backgroundColor !== bgColor){
-            lbNL[i].classList.add("flipping");
-            setTimeout(() => {
-                lbNL[i].style.backgroundColor = bgColor;
-            }, 300); 
-        } else {
-            lbNL[i].style.backgroundColor = bgColor;
-        }
+        
+        lbNL[i].style.backgroundColor = bgColor;
+        
     }
     
     if (curCol*5+indxPNT+addsafe!=indx){

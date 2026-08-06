@@ -45,6 +45,7 @@ document.addEventListener("keydown", function(event) {
     }
     if(event.key=="Enter"){
         //checkGuess();
+        started = false;
         if (checkGuess()){
             const colray = answerCheck();
             console.log("valid");
@@ -57,7 +58,9 @@ document.addEventListener("keydown", function(event) {
             console.log(KBOL);
             curCol++;
             indxPNT=0;
-            setTimeout(()=>{if (colray.every(color => color === 0)){
+            setTimeout(()=>{
+            started = true;
+            if (colray.every(color => color === 0)){
                 document.getElementById("startBut").disabled=false;
                 document.getElementById("over").style.display="flex";
                 started = false;
@@ -70,11 +73,13 @@ document.addEventListener("keydown", function(event) {
                 started = false;
                 oT.textContent="The word was "+ansst
                 
-            }},1000);
+            } 
+            } ,1000);
             
 
         } else{
             console.log("invalid")
+            started = true;
         }
     }
     if(event.key=="Backspace"){

@@ -1,6 +1,8 @@
 import { wordList } from "./wordList.js";
 import { ansList } from "./wordList.js";
 import { wordHash } from "./wordList.js";
+const kbNL = document.querySelectorAll(".KBK");
+const KBOR = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M"];
 const oT = document.getElementById("overText")
 let started = false
 const lbNL = document.querySelectorAll(".LBDB");
@@ -11,7 +13,7 @@ let ansst;
 let ansar;
 let guesses = 0;
 let boxColArr = new Array(30).fill(3);
-
+let KBOL = new Array(26).fill(3);
 function start(){
     console.log("start() run")
     ansst = ansList[Math.floor(Math.random() * ansList.length)];
@@ -24,9 +26,10 @@ function start(){
     }
 
     ansar =[...ansst];
-    boxColArr = Array(30).fill(3);
+    boxColArr = new Array(30).fill(3);
     curCol=0;
     indxPNT=0; 
+    KBOL = new Array(26).fill(3);
     started =true;
     guesses = 0;
     document.getElementById("startBut").disabled=true;
@@ -36,7 +39,8 @@ function start(){
 let inputAr = [];
 document.getElementById("startBut").addEventListener("click", start);
 document.addEventListener("keydown", function(event) {
-   if(started){ if (/^[a-zA-Z]$/.test(event.key)) {
+   if(started){ 
+    if (/^[a-zA-Z]$/.test(event.key)) {
         keyIn(event.key);
     }
     if(event.key=="Enter"){
@@ -49,6 +53,8 @@ document.addEventListener("keydown", function(event) {
                 boxColArr[curCol*5+i]=colray[i];
             }
             console.log(boxColArr);
+            updateKBOL();
+            console.log(KBOL);
             curCol++;
             indxPNT=0;
             setTimeout(()=>{if (colray.every(color => color === 0)){
@@ -132,6 +138,7 @@ function checkGuess(){
 
   return wordHash.has(fg.toLowerCase());
 }
+
 function answerCheck(){
     let colray = [2, 2, 2, 2, 2]; 
     let gueray = [];
@@ -172,7 +179,29 @@ function answerCheck(){
     }
     return colray;
 }
-
+function updateKBOL(){
+    for (let i = 0; i<boxColArr.length; i++){
+        const temp = boxColArr[i];
+        if (temp==2){
+            const letCol = lbNL[i].textContent.toUpperCase();
+            KBOL[KBOR.indexOf(letCol)]=2;
+        }
+    }
+    for (let i = 0; i<boxColArr.length; i++){
+        const temp = boxColArr[i];
+        if (temp==1){
+            const letCol = lbNL[i].textContent.toUpperCase();
+            KBOL[KBOR.indexOf(letCol)]=1;
+        }
+    }
+    for (let i = 0; i<boxColArr.length; i++){
+        const temp = boxColArr[i];
+        if (temp==0){
+            const letCol = lbNL[i].textContent.toUpperCase();
+            KBOL[KBOR.indexOf(letCol)]=0;
+        }
+    }
+}
 
 function validWord(string){
     return wordHash.has(string);
@@ -209,17 +238,27 @@ function draw(){
         indx--;
     }
 
+    for(let i=0; i<kbNL.length; i++){
+        let bgColor2;
+        if(KBOL[i]==0){
+            bgColor2 = "rgb(100, 224, 83)";
+        }
+        else if (KBOL[i]==1){
+            bgColor2 = "rgb(197, 209, 66)"; 
+           
+        } else if (KBOL[i]==2){
+            bgColor2 = "rgb(124, 127, 127)"; 
+ 
+        } else if (KBOL[i]==3){
+            bgColor2 = "rgb(180, 186, 186)";
+        }
+        
+        
+        kbNL[i].style.backgroundColor = bgColor2;
+    }
+
     lbNL[indx].style.border = "3px solid rgb(0,0,0)"
 }
 
 
 setInterval(draw, 100);
-/*
-Documentation
-
-Variables:
-wordList- Array of all words.
-wordHash- A set of all words.
-lbNL- All boxes of letters stored as a nodelist.
-wtl
-*/

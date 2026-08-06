@@ -3,7 +3,7 @@
 
 <img width="542" height="588" alt="Screenshot 2026-08-04 at 2 54 09 PM" src="https://github.com/user-attachments/assets/ce761f2e-9796-4688-b70d-2411b5846894" />
 
-**Try it here: https://kngplcjms.github.io/wordle=lite/ or copy the code into a HTML code editor such as JSitor**
+**Try it here: https://kngplcjms.github.io/wordle-lite/ or copy the code into a HTML code editor such as JSitor**
 ## Features
 - Keyboard display
 - Random Word Selection
